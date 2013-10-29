@@ -7,7 +7,7 @@ class RssSync < Goliath::API
   include Goliath::Rack::Templates
 
   def on_headers(env, headers)
-    if env['HTTP_CLIENT_ID'].nil?
+    if !env['HTTP_CLIENT_ID']
       raise Goliath::Validation::Error.new(
         400, "Required header: Client-Id.")
     end
@@ -24,7 +24,7 @@ class RssSync < Goliath::API
       return [401, {}, "Authentication failed."]
     end
 
-    url = if next_sync_url.nil?
+    url = if next_sync_url
       "https://cdn.contentful.com/spaces/#{space}/sync?initial=true"
     else
       next_sync_url
