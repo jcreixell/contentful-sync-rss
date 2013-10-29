@@ -20,5 +20,5 @@ Requirements
 License
 -------
 
-Tracker is free software, and may be redistributed under the terms
+Contentful RSS Sync is free software, and may be redistributed under the terms
 specified in the MIT-LICENSE file.
