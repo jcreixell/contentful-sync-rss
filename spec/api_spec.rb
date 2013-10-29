@@ -8,7 +8,7 @@ describe RssSync do
   let(:response_body) { File.read("./spec/support/response.json") }
 
   before(:each) do
-    $redis.set("clients:#{client_id}:api_token", access_token)
+    $redis.set("clients:#{client_id}:access_token", access_token)
     $redis.set("clients:#{client_id}:space", space)
     $redis.set("clients:#{client_id}:next_sync_url", nil)
 

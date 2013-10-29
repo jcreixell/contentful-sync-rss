@@ -14,14 +14,13 @@ class RssSync < Goliath::API
   end
 
   def response(env)
-    # TODO: Refactor with client model + custom validation
-    base_key = "clients:#{env['HTTP_CLIENT_ID']}"
-    space = redis.get "#{base_key}:space"
-    api_token = redis.get "#{base_key}:api_token"
-    next_sync_url = redis.get "#{base_key}:next_sync_url"
+    client_id = env['HTTP_CLIENT_ID']
 
-    unless space && api_token
-      #TODO: make consistent with validation errors
+    space = redis.get "clients:#{client_id}:space"
+    access_token = redis.get "clients:#{client_id}:access_token"
+    next_sync_url = redis.get "clients:#{client_id}:next_sync_url"
+
+    unless space && access_token
       return [401, {}, "Authentication failed."]
     end
 
@@ -34,22 +33,20 @@ class RssSync < Goliath::API
     items = []
     response = nil
     begin
-      content = EM::HttpRequest.new(url).get query: {'access_token' => api_token}
-      logger.info content.response
+      content = EM::HttpRequest.new(url).get query: {'access_token' => access_token}
       if content.response_header.status == 200
-        response = JSON.parse(content.response)
         logger.info "Received #{content.response_header.status} from Contentful"
+        response = JSON.parse(content.response)
         items += response['items']
       else
         raise
       end
-
     end while url = response['nextPageUrl']
 
     rss = builder(:rss, locals: {items: items})
 
     if response['nextSyncUrl']
-      redis.set("#{base_key}:next_sync_url", response['nextSyncUrl'])
+      redis.set("clients:#{client_id}:next_sync_url", response['nextSyncUrl'])
     end
 
     [200, {}, rss]
