@@ -15,4 +15,5 @@ gem 'builder'
 group :test do
   gem 'mock_redis', '~> 0.4'
   gem 'rspec'
+  gem 'webmock'
 end
