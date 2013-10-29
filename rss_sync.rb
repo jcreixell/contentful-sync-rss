@@ -26,24 +26,33 @@ class RssSync < Goliath::API
       return [401, {}, "Authentication failed."]
     end
 
-    content = if next_sync_url.nil?
-      EM::HttpRequest.new("https://cdn.contentful.com/spaces/#{space}/sync?initial=true&access_token=#{api_token}").get
+    url = if next_sync_url.nil?
+      "https://cdn.contentful.com/spaces/#{space}/sync?initial=true"
     else
-      EM::HttpRequest.new(next_sync_url).get
+      next_sync_url
     end
 
-    logger.info "Received #{content.response_header.status} from Contentful"
+    items = []
+    response = nil
+    begin
+      content = EM::HttpRequest.new(url).get query: {'access_token' => api_token}
+      if content.response_header.status == 200
+        response = JSON.parse(content.response)
+        logger.info "Received #{content.response_header.status} from Contentful"
+        items += response['items']
+      else
+        #TODO: handle
+      end
 
-    if content.response_header.status == 200
-      # TODO: iterate through pages and store next sync url
-      items = JSON.parse(content.response)['items']
-      logger.info items
-      logger.info builder(:rss, locals: {items: items})
-    else
-      # TODO: handle exception
+    end while url = response['nextPageUrl']
+
+    rss = builder(:rss, locals: {items: items})
+
+    if response['nextSyncUrl']
+      redis.set("#{base_key}:next_sync_url", response['nextSyncUrl'])
     end
 
-    [200, {}, content.response]
+    [200, {}, rss]
   end
 
 end
