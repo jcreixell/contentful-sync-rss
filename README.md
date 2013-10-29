@@ -13,6 +13,10 @@ Clone the repository:
     git clone git://github.com/jcreixell/contentful-rss-sync.git
     cd contentful-rss-sync
 
+Install the required gems:
+
+    bundle
+
 Run the tests:
 
     rake
