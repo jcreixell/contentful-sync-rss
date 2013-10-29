@@ -8,8 +8,14 @@ RSS proxy for Contentful Synchronization API
 Setup
 -----
 
+Clone the repository:
+
     git clone git://github.com/jcreixell/contentful-rss-sync.git
     cd contentful-rss-sync
+
+Run the tests:
+
+    rake
 
 Requirements
 ------------
