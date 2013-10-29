@@ -1,7 +1,7 @@
 Contentful RSS Sync
 ===================
 
-[![Build Status](https://secure.travis-ci.org/jcreixell/contentful-rss-sync.png)](http://travis-ci.org/jcreixell/contentful-rss-sync)
+[![Build Status](https://travis-ci.org/jcreixell/contentful-sync-rss.png?branch=master)](https://travis-ci.org/jcreixell/contentful-sync-rss)
 
 RSS proxy for Contentful Synchronization API
 
