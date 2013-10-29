@@ -4,7 +4,6 @@ require 'json'
 
 class RssSync < Goliath::API
   use Goliath::Rack::Render
-  use Goliath::Rack::Heartbeat, path: '/'
   include Goliath::Rack::Templates
 
   def on_headers(env, headers)
@@ -36,12 +35,13 @@ class RssSync < Goliath::API
     response = nil
     begin
       content = EM::HttpRequest.new(url).get query: {'access_token' => api_token}
+      logger.info content.response
       if content.response_header.status == 200
         response = JSON.parse(content.response)
         logger.info "Received #{content.response_header.status} from Contentful"
         items += response['items']
       else
-        #TODO: handle
+        raise
       end
 
     end while url = response['nextPageUrl']
