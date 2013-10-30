@@ -1,0 +1,36 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "mlkty80quhya"
+          }
+        },
+        "type": "Entry",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "P7RXFG5fUsaoyM6UaqoEU"
+          }
+        },
+        "id": "W6ZRf8AVUaQGewSISqAOo",
+        "revision": 1,
+        "createdAt": "2013-10-28T07:51:32.495Z",
+        "updatedAt": "2013-10-28T07:51:32.495Z"
+      },
+      "fields": {
+        "titulo": {
+          "en-US": "AAAAAAAAAAAAAA"
+        }
+      }
+    }
+  ],
+  "nextPageUrl": "https://cdn.contentful.com/spaces/cfexampleapi/sync?sync_token=nextpagetoken&access_token=b4c0n73n7fu1"
+}
