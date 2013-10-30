@@ -24,7 +24,7 @@ class RssSync < Goliath::API
       return [401, {}, "Authentication failed."]
     end
 
-    url = if next_sync_url
+    url = if next_sync_url.nil?
       "https://cdn.contentful.com/spaces/#{space}/sync?initial=true"
     else
       next_sync_url
