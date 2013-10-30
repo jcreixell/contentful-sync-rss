@@ -11,7 +11,6 @@ xml.rss :version => "2.0" do
         xml.link "link"
         xml.description "description"
         xml.pubDate DateTime.parse(item['sys']['createdAt'])
-        xml.guid "guid"
       end
     end
   end
