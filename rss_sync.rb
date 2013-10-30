@@ -2,6 +2,8 @@ require 'goliath'
 require 'em-synchrony/em-http'
 require 'json'
 
+require_relative 'lib/contentful-sync-rss/errors'
+
 class RssSync < Goliath::API
   use Goliath::Rack::Render
   include Goliath::Rack::Templates
@@ -39,7 +41,7 @@ class RssSync < Goliath::API
         response = JSON.parse(content.response)
         items += response['items']
       else
-        raise
+        raise ::ContentfulSyncRss::Errors::SyncApiError
       end
     end while url = response['nextPageUrl']
 

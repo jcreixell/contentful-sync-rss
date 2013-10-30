@@ -94,6 +94,31 @@ describe RssSync do
           end
         end
       end
+
+      context "an error occurs while acessing to the Sync API" do
+        before(:each) do
+          stub_request(:get, /.*cdn.contentful.com.*/).
+            with(:query => {'initial' => 'true', 'access_token' => access_token}).
+            to_return(status: 500)
+        end
+
+        it "returns an error" do
+          with_api(RssSync) do
+            get_request path: '/', head: {"Client-Id" => client_id} do |content|
+              content.response_header.status.should == 500
+            end
+          end
+        end
+
+        it "does not store the next_sync_url" do
+          with_api(RssSync) do
+            get_request path: '/', head: {"Client-Id" => client_id} do |content|
+              $redis.get("clients:#{client_id}:next_sync_url").should == nil
+            end
+          end
+        end
+
+      end
     end
 
   end
