@@ -1,6 +1,8 @@
 require 'goliath'
 require 'em-synchrony/em-http'
+require 'redis'
 require 'json'
+require 'yaml'
 
 require_relative 'lib/contentful-sync-rss/errors'
 

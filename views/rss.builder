@@ -8,8 +8,8 @@ xml.rss :version => "2.0" do
     items.each do |item|
       xml.item do
         xml.title item['sys']['id']
-        xml.link "link"
-        xml.description "description"
+        xml.link "http://contentful.com/"
+        xml.description JSON.dump(item['fields'])
         xml.pubDate DateTime.parse(item['sys']['createdAt'])
       end
     end

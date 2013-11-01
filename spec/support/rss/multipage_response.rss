@@ -6,14 +6,14 @@
     <link>http://contentful.com/</link>
     <item>
       <title>W6ZRf8AVUaQGewSISqAOo</title>
-      <link>link</link>
-      <description>description</description>
+      <link>http://contentful.com/</link>
+      <description>{"title":{"en-US":"AAAAAAAAAAAAAA"}}</description>
       <pubDate>2013-10-28T07:51:32+00:00</pubDate>
     </item>
     <item>
       <title>W6ZRf8AVUaQGewSISqAOo</title>
-      <link>link</link>
-      <description>description</description>
+      <link>http://contentful.com/</link>
+      <description>{"title":{"en-US":"JHDBFLJSKHDBLS"}}</description>
       <pubDate>2013-10-28T07:51:32+00:00</pubDate>
     </item>
   </channel>
