@@ -19,6 +19,14 @@ module ContentfulSyncRss
       space = redis.get "clients:#{client_id}:space"
       access_token = redis.get "clients:#{client_id}:access_token"
       next_sync_url = redis.get "clients:#{client_id}:next_sync_url"
+    def render_output(format, items)
+      case format
+      when :rss
+        builder(:rss, locals: {items: items})
+      else
+        raise Errors::UnsupportedFormat
+      end
+    end
 
       unless space && access_token
         return [401, {}, "Authentication failed."]
