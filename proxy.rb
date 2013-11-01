@@ -13,12 +13,6 @@ module ContentfulSyncRss
       end
     end
 
-    def response(env)
-      client_id = env['HTTP_CLIENT_ID']
-
-      space = redis.get "clients:#{client_id}:space"
-      access_token = redis.get "clients:#{client_id}:access_token"
-      next_sync_url = redis.get "clients:#{client_id}:next_sync_url"
     def render_output(format, items)
       case format
       when :rss
@@ -28,36 +22,26 @@ module ContentfulSyncRss
       end
     end
 
-      unless space && access_token
+    def response(env)
+      begin
+        client = Client.find(redis, env['HTTP_CLIENT_ID'])
+      rescue Errors::ClientNotFound
         return [401, {}, "Authentication failed."]
       end
 
-      url = if next_sync_url.nil?
-        "https://cdn.contentful.com/spaces/#{space}/sync?initial=true"
+      url = if client.next_sync_url.nil?
+        "https://cdn.contentful.com/spaces/#{client.space}/sync?initial=true"
       else
-        next_sync_url
+        client.next_sync_url
       end
 
-      items = []
-      response = nil
-      begin
-        content = EM::HttpRequest.new(url).get query: {'access_token' => access_token}
-        if content.response_header.status == 200
-          logger.info "Received #{content.response_header.status} from Contentful"
-          response = JSON.parse(content.response)
-          items += response['items']
-        else
-          raise ::ContentfulSyncRss::Errors::SyncApiError
-        end
-      end while url = response['nextPageUrl']
+      response = RequestHandler.request(url, client.access_token)
+      output = render_output(:rss, response.items)
 
-      rss = builder(:rss, locals: {items: items})
+      client.next_sync_url = response.next_sync_url
+      client.save(redis)
 
-      if response['nextSyncUrl']
-        redis.set("clients:#{client_id}:next_sync_url", response['nextSyncUrl'])
-      end
-
-      [200, {}, rss]
+      [200, {}, output]
     end
 
   end
