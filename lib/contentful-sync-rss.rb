@@ -9,4 +9,6 @@ require 'yaml'
 
 # load app
 require 'contentful-sync-rss/models/client'
+require 'contentful-sync-rss/classes/request_handler'
+require 'contentful-sync-rss/classes/response'
 require 'contentful-sync-rss/errors'
