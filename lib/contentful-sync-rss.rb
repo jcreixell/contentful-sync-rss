@@ -8,4 +8,5 @@ require 'json'
 require 'yaml'
 
 # load app
+require 'contentful-sync-rss/models/client'
 require 'contentful-sync-rss/errors'
