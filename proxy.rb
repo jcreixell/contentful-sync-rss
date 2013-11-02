@@ -13,15 +13,6 @@ module ContentfulSyncRss
       end
     end
 
-    def render_output(format, items)
-      case format
-      when :rss
-        builder(:rss, locals: {items: items})
-      else
-        raise Errors::UnsupportedFormat
-      end
-    end
-
     def response(env)
       begin
         client = Client.find(redis, env['HTTP_CLIENT_ID'])
@@ -42,6 +33,17 @@ module ContentfulSyncRss
       client.save(redis)
 
       [200, {}, output]
+    end
+
+    private
+
+     def render_output(format, items)
+      case format
+      when :rss
+        builder(:rss, locals: {items: items})
+      else
+        raise Errors::UnsupportedFormat
+      end
     end
 
   end
