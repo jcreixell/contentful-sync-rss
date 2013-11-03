@@ -31,6 +31,7 @@ module ContentfulSyncRss
       rescue StandardError
         raise Errors::Persistence::DatabaseAccessError
       end
+      self
     end
 
   end
