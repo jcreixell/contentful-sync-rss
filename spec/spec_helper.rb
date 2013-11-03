@@ -2,6 +2,9 @@ require 'goliath/test_helper'
 require 'mock_redis'
 require 'webmock/rspec'
 
+require_relative '../proxy'
+
+
 $redis = MockRedis.new
 
 class Goliath::Server

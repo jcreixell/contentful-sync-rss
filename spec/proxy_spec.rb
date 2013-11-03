@@ -1,5 +1,4 @@
-require_relative 'spec_helper'
-require_relative '../proxy'
+require 'spec_helper'
 
 module ContentfulSyncRss
   describe Proxy do
