@@ -11,6 +11,7 @@ gem 'redis', '~> 3.0',
   :require => ["redis/connection/synchrony", "redis"]
 gem 'tilt'
 gem 'builder'
+gem 'active_support'
 
 group :test do
   gem 'mock_redis', '~> 0.4'

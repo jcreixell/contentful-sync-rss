@@ -1,10 +1,7 @@
-require "bundler"
-Bundler.require
-
 require 'goliath/runner'
-require_relative 'rss_sync'
+require_relative 'proxy'
 
 runner = Goliath::Runner.new(ARGV, nil)
-runner.api = RssSync.new
-runner.app = Goliath::Rack::Builder.build(RssSync, runner.api)
+runner.api = ContentfulSyncRss::Proxy.new
+runner.app = Goliath::Rack::Builder.build(ContentfulSyncRss::Proxy, runner.api)
 runner.run

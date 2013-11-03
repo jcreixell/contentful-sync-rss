@@ -5,5 +5,11 @@ module ContentfulSyncRss
 
     class SyncApiError < Base; end
 
+    class UnsupportedFormat < Base; end
+
+    class DatabaseAccessError < Base; end
+
+    class ClientNotFound < Base; end
+
   end
 end
