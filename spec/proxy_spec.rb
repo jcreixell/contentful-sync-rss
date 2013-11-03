@@ -8,20 +8,13 @@ module ContentfulSyncRss
     let(:space) { "cfexampleapi" }
     let(:url) { "https://cdn.contentful.com/spaces/#{space}/sync" }
     let(:response_body) { File.read("./spec/support/json/response.json") }
-    let(:empty_response_body) { File.read("./spec/support/json/empty_response.json") }
 
     before(:each) do
-      $redis.set("clients:#{client_id}:access_token", access_token)
-      $redis.set("clients:#{client_id}:space", space)
-      $redis.del("clients:#{client_id}:next_sync_url")
+      Client.new(client_id, space, access_token, nil).save($redis)
 
       stub_request(:get, url).
         with(:query => {'initial' => 'true', 'access_token' => access_token}).
         to_return(body: response_body, status: 200)
-
-      stub_request(:get, url).
-        with(:query => {'sync_token' => "nextsynctoken"}).
-        to_return(body: empty_response_body, status: 200)
     end
 
     describe "authentication" do
@@ -55,10 +48,10 @@ module ContentfulSyncRss
           end
         end
 
-        it "stores the next_sync_url" do
+        it "stores the next_sync_url for the client" do
           with_api(Proxy) do
             get_request path: '/', head: {"Client-Id" => client_id} do |content|
-              $redis.get("clients:#{client_id}:next_sync_url").should == JSON.parse(response_body)['nextSyncUrl']
+              Client.find($redis, client_id).next_sync_url.should == JSON.parse(response_body)['nextSyncUrl']
             end
           end
         end
@@ -87,7 +80,7 @@ module ContentfulSyncRss
               to_return(body: response_body_page2, status: 200)
           end
 
-          it "collects the data from the different pages into a single response" do
+          it "collects the data from all pages into a single response" do
             with_api(Proxy) do
               get_request path: '/', head: {"Client-Id" => client_id} do |content|
                 content.response_header.status.should == 200
@@ -115,11 +108,10 @@ module ContentfulSyncRss
           it "does not store the next_sync_url" do
             with_api(Proxy) do
               get_request path: '/', head: {"Client-Id" => client_id} do |content|
-                $redis.get("clients:#{client_id}:next_sync_url").should == nil
+                $redis.get("clients:#{client_id}:next_sync_url").should be_blank
               end
             end
           end
-
         end
       end
     end
