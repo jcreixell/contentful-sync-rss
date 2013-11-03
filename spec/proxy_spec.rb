@@ -6,6 +6,7 @@ module ContentfulSyncRss
     let(:client_id) { '300f33c4a33b9c23dd9ab810bd297929' }
     let(:access_token) { "b4c0n73n7fu1" }
     let(:space) { "cfexampleapi" }
+    let(:url) { "https://cdn.contentful.com/spaces/#{space}/sync" }
     let(:response_body) { File.read("./spec/support/json/response.json") }
     let(:empty_response_body) { File.read("./spec/support/json/empty_response.json") }
 
@@ -14,11 +15,11 @@ module ContentfulSyncRss
       $redis.set("clients:#{client_id}:space", space)
       $redis.del("clients:#{client_id}:next_sync_url")
 
-      stub_request(:get, "https://cdn.contentful.com/spaces/#{space}/sync").
+      stub_request(:get, url).
         with(:query => {'initial' => 'true', 'access_token' => access_token}).
         to_return(body: response_body, status: 200)
 
-      stub_request(:get, "https://cdn.contentful.com/spaces/#{space}/sync").
+      stub_request(:get, url).
         with(:query => {'sync_token' => "nextsynctoken"}).
         to_return(body: empty_response_body, status: 200)
     end
@@ -77,11 +78,11 @@ module ContentfulSyncRss
           let(:response_body_page2) { File.read("./spec/support/json/multipage_response_page2.json") }
 
           before(:each) do
-            stub_request(:get, "https://cdn.contentful.com/spaces/#{space}/sync").
+            stub_request(:get, url).
               with(:query => {'initial' => 'true', 'access_token' => access_token}).
               to_return(body: response_body_page1, status: 200)
 
-            stub_request(:get, "https://cdn.contentful.com/spaces/#{space}/sync").
+            stub_request(:get, url).
               with(:query => {'sync_token' => 'nextpagetoken', 'access_token' => access_token}).
               to_return(body: response_body_page2, status: 200)
           end
@@ -98,7 +99,7 @@ module ContentfulSyncRss
 
         context "an error occurs while acessing to the Sync API" do
           before(:each) do
-            stub_request(:get, "https://cdn.contentful.com/spaces/#{space}/sync").
+            stub_request(:get, url).
               with(:query => {'initial' => 'true', 'access_token' => access_token}).
               to_return(status: 500)
           end
