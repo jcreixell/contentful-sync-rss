@@ -4,6 +4,20 @@ require 'webmock/rspec'
 
 require_relative '../proxy'
 
+module Helpers
+  def async
+    if EM.reactor_running?
+      yield
+    else
+      out = nil
+      EM.synchrony do
+        out = yield
+        EM.stop
+      end
+      out
+    end
+  end
+end
 
 $redis = MockRedis.new
 
@@ -14,6 +28,7 @@ class Goliath::Server
 end
 
 RSpec.configure do |config| 
+  config.include Helpers
   config.include Goliath::TestHelper, :example_group => {
     :file_path => /spec/
   }
