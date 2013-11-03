@@ -66,30 +66,6 @@ module ContentfulSyncRss
           end
         end
 
-        context "with pagination" do
-          let(:response_body_page1) { File.read("./spec/support/json/multipage_response_page1.json") }
-          let(:response_body_page2) { File.read("./spec/support/json/multipage_response_page2.json") }
-
-          before(:each) do
-            stub_request(:get, url).
-              with(:query => {'initial' => 'true', 'access_token' => access_token}).
-              to_return(body: response_body_page1, status: 200)
-
-            stub_request(:get, url).
-              with(:query => {'sync_token' => 'nextpagetoken', 'access_token' => access_token}).
-              to_return(body: response_body_page2, status: 200)
-          end
-
-          it "collects the data from all pages into a single response" do
-            with_api(Proxy) do
-              get_request path: '/', head: {"Client-Id" => client_id} do |content|
-                content.response_header.status.should == 200
-                content.response.should == File.read("./spec/support/rss/multipage_response.rss")
-              end
-            end
-          end
-        end
-
         context "an error occurs while acessing to the Sync API" do
           before(:each) do
             stub_request(:get, url).
