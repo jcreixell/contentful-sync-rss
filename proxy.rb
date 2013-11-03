@@ -7,7 +7,7 @@ module ContentfulSyncRss
     include Goliath::Rack::Templates
 
     def on_headers(env, headers)
-      if !env['HTTP_CLIENT_ID']
+      if env['HTTP_CLIENT_ID'].blank?
         raise Goliath::Validation::Error.new(
           400, "Required header: Client-Id.")
       end
@@ -20,7 +20,7 @@ module ContentfulSyncRss
         return [401, {}, "Authentication failed."]
       end
 
-      url = if client.next_sync_url.nil?
+      url = if client.next_sync_url.blank?
         "https://cdn.contentful.com/spaces/#{client.space}/sync?initial=true"
       else
         client.next_sync_url

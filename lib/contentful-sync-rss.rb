@@ -5,6 +5,7 @@ require 'goliath'
 require 'em-synchrony/em-http'
 require 'redis'
 require 'json'
+require 'active_support/core_ext/object'
 
 # load app
 require 'contentful-sync-rss/models/client'
