@@ -18,4 +18,8 @@ RSpec.configure do |config|
   config.before(:suite) do
     WebMock.disable_net_connect!(:allow_localhost => true)
   end
+
+  config.before(:each) do
+    $redis.flushdb
+  end
 end
